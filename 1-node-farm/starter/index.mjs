@@ -24,13 +24,22 @@
 //   });
 // });
 // console.log("Will read file");
-import { readFile, writeFile } from "fs/promises";
+// import { readFile, writeFile } from "fs/promises";
 
-try {
-  const data1 = await readFile("./txt/start.txt", "utf-8");
-  const data2 = await readFile(`./txt/${data1}.txt`, "utf-8");
-  const data3 = await readFile("./txt/append.txt", "utf-8");
-  await writeFile("./txt/final.txt", `${data2}\n${data3}`, "utf-8");
-} catch (err) {
-  console.error("Error🔴");
-}
+// try {
+//   const data1 = await readFile("./txt/start.txt", "utf-8");
+//   const data2 = await readFile(`./txt/${data1}.txt`, "utf-8");
+//   const data3 = await readFile("./txt/append.txt", "utf-8");
+//   await writeFile("./txt/final.txt", `${data2}\n${data3}`, "utf-8");
+// } catch (err) {
+//   console.error("Error🔴");
+// }
+import { createServer } from "http";
+const server = createServer((req, res) => {
+  //   console.log(req);
+  res.end("Hello from the server!");
+});
+
+server.listen(8000, "127.0.0.1", () => {
+  console.log("Listening to request on port 8000");
+});
