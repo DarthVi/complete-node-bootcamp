@@ -43,22 +43,62 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const replaceTemplate = (temp, product) => {
+  let output = temp.replace(/{%PRODUCTNAME%}/g, product.productName);
+  output = output.replace(/{%IMAGE%}/g, product.image);
+  output = output.replace(/{%PRICE%}/g, product.price);
+  output = output.replace(/{%FROM%}/g, product.from);
+  output = output.replace(/{%NUTRIENTS%}/g, product.nutrients);
+  output = output.replace(/{%QUANTITY%}/g, product.quantity);
+  output = output.replace(/{%DESCRIPTION%}/g, product.description);
+  output = output.replace(/{%ID%}/g, product.id);
+  if (!product.organic)
+    output = output.replace(/{%NOT_ORGANIC%}/g, "not-organic");
+
+  return output;
+};
+
+const tempOverview = await readFile(
+  `${__dirname}/templates/template-overview.html`,
+  "utf-8"
+);
+const tempCard = await readFile(
+  `${__dirname}/templates/template-card.html`,
+  "utf-8"
+);
+const tempProduct = await readFile(
+  `${__dirname}/templates/template-product.html`,
+  "utf-8"
+);
 const data = await readFile(`${__dirname}/dev-data/data.json`, "utf-8");
-const dataObject = JSON.parse(data);
+const dataObj = JSON.parse(data);
 
 const server = createServer(async (req, res) => {
   console.log(req.url);
 
   const pathname = req.url;
 
+  //OVERVIEW PAGE
   if (pathname === "/" || pathname === "/overview") {
-    res.end("This is the OVERVIEW");
-  } else if (pathname === "/product") {
+    res.writeHead(404, {
+      "Content-type": "text/html",
+    });
+
+    const cardsHtml = dataObj.map(el => replaceTemplate(tempCard, el)).join("");
+    const output = tempOverview.replace("{%PRODUCT_CARDS%}", cardsHtml);
+    res.end(output);
+  }
+  //PRODUCT PAGE
+  else if (pathname === "/product") {
     res.end("This is the PRODUCT");
-  } else if (pathname === "/api") {
+  }
+  //API
+  else if (pathname === "/api") {
     res.writeHead(200, { "Content-type": "application/json" });
     res.end(data);
-  } else {
+  }
+  //NOT FOUND PAGE
+  else {
     res.writeHead(404, {
       "Content-type": "text/html",
     });
