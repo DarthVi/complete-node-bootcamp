@@ -35,9 +35,35 @@
 //   console.error("Error🔴");
 // }
 import { createServer } from "http";
-const server = createServer((req, res) => {
-  //   console.log(req);
-  res.end("Hello from the server!");
+import { readFile, writeFile } from "fs/promises";
+import url from "url";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const data = await readFile(`${__dirname}/dev-data/data.json`, "utf-8");
+const dataObject = JSON.parse(data);
+
+const server = createServer(async (req, res) => {
+  console.log(req.url);
+
+  const pathname = req.url;
+
+  if (pathname === "/" || pathname === "/overview") {
+    res.end("This is the OVERVIEW");
+  } else if (pathname === "/product") {
+    res.end("This is the PRODUCT");
+  } else if (pathname === "/api") {
+    res.writeHead(200, { "Content-type": "application/json" });
+    res.end(data);
+  } else {
+    res.writeHead(404, {
+      "Content-type": "text/html",
+    });
+    res.end("<h1>Page not found</h1>");
+  }
 });
 
 server.listen(8000, "127.0.0.1", () => {
