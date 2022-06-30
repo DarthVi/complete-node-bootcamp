@@ -74,13 +74,11 @@ const data = await readFile(`${__dirname}/dev-data/data.json`, "utf-8");
 const dataObj = JSON.parse(data);
 
 const server = createServer(async (req, res) => {
-  console.log(req.url);
-
-  const pathname = req.url;
+  const { query, pathname } = url.parse(req.url, true);
 
   //OVERVIEW PAGE
   if (pathname === "/" || pathname === "/overview") {
-    res.writeHead(404, {
+    res.writeHead(200, {
       "Content-type": "text/html",
     });
 
@@ -90,7 +88,13 @@ const server = createServer(async (req, res) => {
   }
   //PRODUCT PAGE
   else if (pathname === "/product") {
-    res.end("This is the PRODUCT");
+    const product = dataObj[query.id];
+    res.writeHead(200, {
+      "Content-type": "text/html",
+    });
+    const output = replaceTemplate(tempProduct, product);
+
+    res.end(output);
   }
   //API
   else if (pathname === "/api") {
