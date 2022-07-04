@@ -39,6 +39,9 @@ import { readFile, writeFile } from "fs/promises";
 import url from "url";
 import path from "path";
 import { fileURLToPath } from "url";
+
+import slugify from "slugify";
+
 import replaceTemplate from "./modules/replaceTemplate.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -58,6 +61,9 @@ const tempProduct = await readFile(
 );
 const data = await readFile(`${__dirname}/dev-data/data.json`, "utf-8");
 const dataObj = JSON.parse(data);
+
+const slugs = dataObj.map(el => slugify(el.productName, { lower: true }));
+console.log(slugs);
 
 const server = createServer(async (req, res) => {
   const { query, pathname } = url.parse(req.url, true);
