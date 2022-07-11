@@ -1,0 +1,13 @@
+{
+  "name": "node_works",
+  "version": "1.0.0",
+  "description": "",
+  "main": "event-loop.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon event-loop.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Vito Vincenzo Covella",
+  "license": "ISC"
+}
