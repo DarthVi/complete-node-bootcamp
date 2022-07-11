@@ -5,7 +5,7 @@
   "main": "event-loop.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon events.js",
+    "start": "nodemon streams.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Vito Vincenzo Covella",
