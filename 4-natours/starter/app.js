@@ -21,6 +21,27 @@ app.get('/api/v1/tours', (req, res) => {
   });
 });
 
+// a variable defined by <:var>, to make it optional <:var?>
+app.get('/api/v1/tours/:id', (req, res) => {
+  const id = req.params.id * 1; //trick to convert string to number
+  const tour = tours.find((el) => el.id === id);
+
+  //if (id > tours.length || id < 0)
+  if (!tour) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      tour,
+    },
+  });
+});
+
 app.post('/api/v1/tours', async (req, res) => {
   const newId = tours[tours.length - 1].id + 1;
   //lets us create a new object by merging existing objects
@@ -41,9 +62,7 @@ app.post('/api/v1/tours', async (req, res) => {
   } catch (err) {
     res.status(500).json({
       status: 'error',
-      data: {
-        message: err.message,
-      },
+      message: err.message,
     });
   }
 });
