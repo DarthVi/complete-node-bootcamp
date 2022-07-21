@@ -6,12 +6,25 @@ const app = express();
 
 //add a middleware, which is a function that can modify the incoming request data
 app.use(express.json());
+//ad a middlwware function to the middleware stack
+//Express passes the third function as the next function (the parameter it can be called whatever we want though)
+app.use((req, res, next) => {
+  console.log('Hello from the middleware 👋');
+  next();
+});
+
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
+});
 
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 );
 const getAllTours = (req, res) => {
+  console.log(req.requestTime);
   res.status(200).json({
+    requestedAt: req.requestTime,
     status: 'success',
     results: tours.length,
     data: {
@@ -94,13 +107,6 @@ const deleteTour = (req, res) => {
     data: null,
   });
 };
-
-// app.get('/api/v1/tours', getAllTours);
-// app.post('/api/v1/tours', createTour);
-// a variable defined by <:var>, to make it optional <:var?>
-// app.get('/api/v1/tours/:id', getTour);
-// app.patch('/api/v1/tours/:id', updateTour);
-// app.delete('/api/v1/tours/:id', deleteTour);
 
 app.route('/api/v1/tours').get(getAllTours).post(createTour);
 // a variable defined by <:var>, to make it optional <:var?>
