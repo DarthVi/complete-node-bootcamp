@@ -6,7 +6,7 @@ const userRouter = require('./routes/userRoutes');
 const app = express();
 
 // 1) MIDDELWARES
-app.use(morgan('dev'));
+if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 //add a middleware, which is a function that can modify the incoming request data
 app.use(express.json());
 app.use(express.static(`${__dirname}/public`));
