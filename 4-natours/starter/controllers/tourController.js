@@ -52,6 +52,7 @@ exports.getTour = (req, res) => {
 exports.createTour = async (req, res) => {
   const newId = tours[tours.length - 1].id + 1;
   //lets us create a new object by merging existing objects
+  // eslint-disable-next-line prefer-object-spread
   const newTour = Object.assign({ id: newId }, req.body);
 
   tours.push(newTour);
