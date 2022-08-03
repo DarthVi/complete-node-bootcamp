@@ -8,7 +8,7 @@ const router = express.Router();
 router
   .route('/')
   .get(tourController.getAllTours)
-  .post(tourController.checkBody, tourController.createTour);
+  .post(tourController.createTour);
 // a variable defined by <:var>, to make it optional <:var?>
 router
   .route('/:id')
