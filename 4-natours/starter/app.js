@@ -1,5 +1,8 @@
 const express = require('express');
 const morgan = require('morgan');
+
+const AppError = require('./utils/appError');
+const globalErrorHandler = require('./controllers/errorController');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 
@@ -27,10 +30,13 @@ app.use('/api/v1/users', userRouter);
 //All allows us to consider all the HTTP verbs, * to handle all
 //the urls not handled before
 app.all('*', (req, res, next) => {
-  res.status(404).json({
-    status: 'fail',
-    message: `Can't find ${req.originalUrl} on this server!`,
-  });
+  //whenever we pass something to next, Express assumes that it is
+  //an error and skip all the other middleware in the stack, passing
+  //the execution to the error handling middleware
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
+
+// Error handling middleware
+app.use(globalErrorHandler);
 
 module.exports = app;
