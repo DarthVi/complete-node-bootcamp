@@ -10,12 +10,6 @@ if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 //add a middleware, which is a function that can modify the incoming request data
 app.use(express.json());
 app.use(express.static(`${__dirname}/public`));
-//ad a middlwware function to the middleware stack
-//Express passes the third function as the next function (the parameter it can be called whatever we want though)
-app.use((req, res, next) => {
-  console.log('Hello from the middleware 👋');
-  next();
-});
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toLocaleString('it-IT', {
@@ -27,5 +21,16 @@ app.use((req, res, next) => {
 // 3) ROUTES
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+
+//If we reach middlewares in this part of the code, it means
+//that other routes failed because they were not appropriate.
+//All allows us to consider all the HTTP verbs, * to handle all
+//the urls not handled before
+app.all('*', (req, res, next) => {
+  res.status(404).json({
+    status: 'fail',
+    message: `Can't find ${req.originalUrl} on this server!`,
+  });
+});
 
 module.exports = app;
