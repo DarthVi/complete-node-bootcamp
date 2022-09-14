@@ -1,7 +1,11 @@
 const express = require('express');
 const userController = require('../controllers/userController');
+const authController = require('../controllers/authController');
 
 const router = express.Router();
+
+//doesn't follow 100% rest philosophy, but it's ok in this case
+router.post('/signup', authController.signup);
 
 router
   .route('/')
