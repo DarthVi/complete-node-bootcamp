@@ -6,6 +6,7 @@ const router = express.Router();
 
 //doesn't follow 100% rest philosophy, but it's ok in this case
 router.post('/signup', authController.signup);
+router.post('/login', authController.login);
 
 router
   .route('/')
