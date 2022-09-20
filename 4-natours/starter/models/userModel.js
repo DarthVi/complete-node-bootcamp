@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema({
   },
   passwordChangedAt: Date,
   passwordResetToken: String,
-  PasswordResetExpires: Date,
+  passwordResetExpires: Date,
 });
 
 userSchema.pre('save', async function (next) {
@@ -54,6 +54,13 @@ userSchema.pre('save', async function (next) {
   //indeed after the password validation, we can avoid storing this field
   this.passwordConfirm = undefined;
 
+  next();
+});
+
+userSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) return next();
+
+  this.passwordChangedAt = Date.now() - 1000;
   next();
 });
 
@@ -85,9 +92,7 @@ userSchema.methods.createPasswordResetToken = function () {
     .update(resetToken)
     .digest('hex');
 
-  console.log({ resetToken }, this.passwordResetToken);
-
-  this.PasswordResetExpires = Date.now() + 10 * 60 * 1000; // 10 minutes from now
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10 minutes from now
 
   // we are gonna send via email the unencrypted reset token, so we return
   // the plaintext version of it
